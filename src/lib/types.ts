@@ -1,3 +1,5 @@
+import { LucideIcon } from 'lucide-react';
+
 export interface PomodoroSettings {
   workDuration: number;
   breakDuration: number;
