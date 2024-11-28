@@ -11,7 +11,8 @@ import {
   Flame, 
   Wind, 
   Music,
-  Volume2
+  Volume2,
+  Headphones
 } from 'lucide-react';
 
 const iconMap = {
@@ -29,6 +30,11 @@ export function SoundControl() {
 
   return (
     <div className="space-y-4">
+      <div className="flex items-center space-x-2 mb-4">
+        <Headphones className="h-5 w-5" />
+        <h2 className="text-xl font-semibold">Ambient Sounds</h2>
+      </div>
+
       <div className="flex flex-wrap gap-2">
         {AMBIENT_SOUNDS.map((sound) => {
           const Icon = iconMap[sound.icon as keyof typeof iconMap];

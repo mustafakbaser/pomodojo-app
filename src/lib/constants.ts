@@ -115,9 +115,9 @@ export const BREAK_ACTIVITIES = [
 ];
 
 export const THEME_COLORS = [
-  { name: 'slate', color: 'bg-slate-500' },
-  { name: 'rose', color: 'bg-rose-500' },
-  { name: 'blue', color: 'bg-blue-500' },
-  { name: 'green', color: 'bg-green-500' },
-  { name: 'purple', color: 'bg-purple-500' }
+  { name: 'slate', color: 'bg-slate-500', variable: '--slate' },
+  { name: 'rose', color: 'bg-rose-500', variable: '--rose' },
+  { name: 'blue', color: 'bg-blue-500', variable: '--blue' },
+  { name: 'green', color: 'bg-green-500', variable: '--green' },
+  { name: 'purple', color: 'bg-purple-500', variable: '--purple' }
 ];

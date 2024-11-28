@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Progress } from '@/components/ui/progress';
-import { PlayIcon, PauseIcon, SkipForwardIcon, RefreshCwIcon } from 'lucide-react';
+import { Play, Pause, SkipForward, RotateCcw } from 'lucide-react';
 import { useTimer } from '@/hooks/useTimer';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useNotification } from '@/hooks/useNotification';
@@ -59,7 +59,6 @@ export function Timer({
   };
 
   React.useEffect(() => {
-    // Update document title with timer
     document.title = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} - Pomodoro`;
     return () => {
       document.title = 'Pomodoro Timer';
@@ -82,7 +81,7 @@ export function Timer({
           className="rounded-full"
           title="Reset (R)"
         >
-          <RefreshCwIcon className="h-4 w-4" />
+          <RotateCcw className="h-4 w-4" />
         </Button>
         
         <Button
@@ -93,9 +92,9 @@ export function Timer({
           title="Play/Pause (Space)"
         >
           {isRunning ? (
-            <PauseIcon className="h-4 w-4" />
+            <Pause className="h-4 w-4" />
           ) : (
-            <PlayIcon className="h-4 w-4" />
+            <Play className="h-4 w-4" />
           )}
         </Button>
         
@@ -106,7 +105,7 @@ export function Timer({
           className="rounded-full"
           title="Skip (S)"
         >
-          <SkipForwardIcon className="h-4 w-4" />
+          <SkipForward className="h-4 w-4" />
         </Button>
       </div>
     </div>

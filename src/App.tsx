@@ -8,7 +8,9 @@ import { BreakSuggestion } from '@/components/BreakSuggestion';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { PomodoroSettings, PomodoroSession, ThemeColor } from '@/lib/types';
 import { DEFAULT_SETTINGS, MOTIVATIONAL_QUOTES } from '@/lib/constants';
-import { Quote } from 'lucide-react';
+import { Quote } from '@/components/ui/quote';
+import { Card, CardContent } from '@/components/ui/card';
+import { Separator } from '@/components/ui/separator';
 
 function App() {
   const [settings, setSettings] = useLocalStorage<PomodoroSettings>('settings', DEFAULT_SETTINGS);
@@ -40,56 +42,63 @@ function App() {
   };
 
   return (
-    <div className="min-h-screen bg-background text-foreground p-4">
-      <div className="max-w-2xl mx-auto space-y-8">
+    <div className="min-h-screen bg-background text-foreground p-4 md:p-8">
+      <div className="max-w-4xl mx-auto space-y-6">
         <div className="flex justify-between items-center">
-          <SettingsDialog settings={settings} onSettingsChange={setSettings} />
-          <ThemeToggle
-            theme={theme}
-            color={themeColor}
-            onThemeChange={setTheme}
-            onColorChange={setThemeColor}
-          />
+          <h1 className="text-2xl font-bold">Pomodoro Timer</h1>
+          <div className="flex items-center gap-2">
+            <SettingsDialog settings={settings} onSettingsChange={setSettings} />
+            <ThemeToggle
+              theme={theme}
+              color={themeColor}
+              onThemeChange={setTheme}
+              onColorChange={setThemeColor}
+            />
+          </div>
         </div>
 
-        <div className="text-center space-y-2">
-          <h1 className="text-4xl font-bold">Pomodoro Timer</h1>
-          <p className="text-muted-foreground">Stay focused and productive</p>
-        </div>
-
-        <div className="bg-card rounded-lg p-6 shadow-lg">
-          <Timer
-            duration={settings.workDuration}
-            onComplete={handleComplete}
-            type="work"
-            autoStart={settings.autoStartPomodoros}
-          />
-        </div>
+        <Card className="border-2">
+          <CardContent className="p-6">
+            <Timer
+              duration={settings.workDuration}
+              onComplete={handleComplete}
+              type="work"
+              autoStart={settings.autoStartPomodoros}
+            />
+          </CardContent>
+        </Card>
 
         <div className="grid gap-6 md:grid-cols-2">
-          <div className="bg-card rounded-lg p-6 shadow-lg">
-            <SessionHistory sessions={sessions} onClearHistory={handleClearHistory} />
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <SessionHistory sessions={sessions} onClearHistory={handleClearHistory} />
+            </CardContent>
+          </Card>
           
-          <div className="bg-card rounded-lg p-6 shadow-lg">
-            <BreakSuggestion />
-          </div>
+          <Card>
+            <CardContent className="p-6">
+              <BreakSuggestion />
+            </CardContent>
+          </Card>
         </div>
 
-        <div className="bg-card rounded-lg p-6 shadow-lg">
-          <h2 className="text-xl font-semibold mb-4 flex items-center space-x-2">
-            <Quote className="h-5 w-5" />
-            <span>Ambient Sounds</span>
-          </h2>
-          <SoundControl />
-        </div>
+        <Card>
+          <CardContent className="p-6">
+            <SoundControl />
+          </CardContent>
+        </Card>
 
-        <div className="bg-card rounded-lg p-6 shadow-lg text-center">
-          <blockquote className="italic text-lg">
-            "{currentQuote.text}"
-          </blockquote>
-          <p className="mt-2 text-muted-foreground">— {currentQuote.author}</p>
-        </div>
+        <Card>
+          <CardContent className="p-6 text-center">
+            <blockquote className="italic text-lg">
+              "{currentQuote.text}"
+            </blockquote>
+            <Separator className="my-4" />
+            <p className="text-muted-foreground">
+              — {currentQuote.author}
+            </p>
+          </CardContent>
+        </Card>
       </div>
     </div>
   );

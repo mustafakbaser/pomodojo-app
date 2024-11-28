@@ -1,10 +1,10 @@
 import React from 'react';
+import { Settings } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Switch } from '@/components/ui/switch';
-import { Settings } from 'lucide-react';
 import { PomodoroSettings } from '@/lib/types';
 
 interface SettingsDialogProps {
@@ -27,8 +27,9 @@ export function SettingsDialog({ settings, onSettingsChange }: SettingsDialogPro
   return (
     <Dialog>
       <DialogTrigger asChild>
-        <Button variant="outline" size="icon" className="rounded-full">
+        <Button variant="outline" size="icon" className="rounded-full w-9 h-9 p-0">
           <Settings className="h-4 w-4" />
+          <span className="sr-only">Settings</span>
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-[425px]">
