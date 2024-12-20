@@ -10,45 +10,38 @@ export function useAudio(sounds: Sound[]) {
   useEffect(() => {
     const setupAudio = async (sound: Sound) => {
       try {
-        // If there's a currently playing audio, fade it out first
         if (audioRef.current) {
-          const currentAudio = audioRef.current;
-          const fadeOutInterval = setInterval(() => {
-            if (currentAudio.volume > 0.1) {
-              currentAudio.volume = Math.max(0, currentAudio.volume - 0.1);
-            } else {
-              clearInterval(fadeOutInterval);
-              currentAudio.pause();
-              currentAudio.src = '';
-            }
-          }, 50);
+          audioRef.current.pause();
+          audioRef.current = null;
         }
 
-        // Create and set up new audio
         const audio = new Audio();
+        
+        // Add error handling before setting the source
+        audio.onerror = (e) => {
+          console.error('Audio loading error:', e);
+          isLoadingRef.current = false;
+          setActiveSound(null);
+        };
+
+        // Set audio properties
         audio.src = sound.url;
         audio.loop = true;
-        audio.volume = 0;  // Start at 0 volume for fade-in
+        audio.volume = volume;
         audioRef.current = audio;
 
-        // Pre-load the audio
-        isLoadingRef.current = true;
-        await audio.load();
-        
-        // Only start playing if this is still the active sound
+        // Play audio if this is the active sound
         if (activeSound === sound.id) {
-          await audio.play();
-          // Fade in
-          const fadeInInterval = setInterval(() => {
-            if (audio.volume < volume) {
-              audio.volume = Math.min(volume, audio.volume + 0.1);
-            } else {
-              clearInterval(fadeInInterval);
-            }
-          }, 50);
+          try {
+            await audio.play();
+          } catch (error) {
+            console.error('Audio play error:', error);
+            setActiveSound(null);
+          }
         }
       } catch (error) {
-        console.error('Audio playback error:', error);
+        console.error('Audio setup error:', error);
+        setActiveSound(null);
       } finally {
         isLoadingRef.current = false;
       }
@@ -57,33 +50,21 @@ export function useAudio(sounds: Sound[]) {
     if (activeSound) {
       const sound = sounds.find(s => s.id === activeSound);
       if (sound) {
+        isLoadingRef.current = true;
         setupAudio(sound);
       }
-    } else if (audioRef.current) {
-      // If no active sound, fade out and stop current audio
-      const currentAudio = audioRef.current;
-      const fadeOutInterval = setInterval(() => {
-        if (currentAudio.volume > 0.1) {
-          currentAudio.volume = Math.max(0, currentAudio.volume - 0.1);
-        } else {
-          clearInterval(fadeOutInterval);
-          currentAudio.pause();
-          currentAudio.src = '';
-          audioRef.current = null;
-        }
-      }, 50);
     }
 
     return () => {
       if (audioRef.current) {
         audioRef.current.pause();
-        audioRef.current.src = '';
+        audioRef.current = null;
       }
     };
   }, [activeSound, sounds, volume]);
 
   const toggleSound = (soundId: string) => {
-    if (isLoadingRef.current) return; // Prevent rapid toggling while loading
+    if (isLoadingRef.current) return;
     setActiveSound(current => current === soundId ? null : soundId);
   };
 

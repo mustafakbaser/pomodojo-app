@@ -38,30 +38,32 @@ export function BreakSuggestion() {
         <h2 className="text-xl font-semibold">Break Activity</h2>
       </div>
       
-      <div className="relative">
-        <div className="absolute -left-3 top-1/2 -translate-y-1/2 z-10">
+      <div className="relative group">
+        {/* Navigation Buttons */}
+        <div className="absolute -left-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => handleNavigation('prev')}
-            className="rounded-full w-8 h-8 hover:bg-background hover:text-primary transition-colors"
+            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90 shadow-lg hover:shadow-xl transition-all"
           >
-            <ChevronLeft className="h-5 w-5" />
+            <ChevronLeft className="h-5 w-5 text-primary" />
           </Button>
         </div>
 
-        <div className="absolute -right-3 top-1/2 -translate-y-1/2 z-10">
+        <div className="absolute -right-4 top-1/2 -translate-y-1/2 z-10 opacity-0 group-hover:opacity-100 transition-opacity">
           <Button
             variant="ghost"
             size="icon"
             onClick={() => handleNavigation('next')}
-            className="rounded-full w-8 h-8 hover:bg-background hover:text-primary transition-colors"
+            className="h-8 w-8 rounded-full bg-background/80 backdrop-blur-sm hover:bg-background/90 shadow-lg hover:shadow-xl transition-all"
           >
-            <ChevronRight className="h-5 w-5" />
+            <ChevronRight className="h-5 w-5 text-primary" />
           </Button>
         </div>
 
-        <Card className="overflow-hidden bg-gradient-to-br from-card to-background border-2">
+        {/* Activity Card */}
+        <Card className="overflow-hidden bg-gradient-to-br from-card to-background border-2 hover:shadow-lg transition-shadow duration-300">
           <CardContent className="p-6">
             <div
               className={cn(
@@ -70,24 +72,25 @@ export function BreakSuggestion() {
                 direction === 'right' && "translate-x-full opacity-0"
               )}
             >
-              <h3 className="font-semibold text-lg mb-2 text-primary">
+              <h3 className="font-semibold text-lg mb-3 text-primary">
                 {currentActivity.title}
               </h3>
-              <p className="text-muted-foreground">
+              <p className="text-muted-foreground leading-relaxed">
                 {currentActivity.description}
               </p>
             </div>
           </CardContent>
         </Card>
 
-        <div className="mt-4 flex justify-center gap-1">
+        {/* Progress Dots */}
+        <div className="mt-4 flex justify-center gap-1.5">
           {BREAK_ACTIVITIES.map((_, index) => (
             <div
               key={index}
               className={cn(
-                "w-1.5 h-1.5 rounded-full transition-colors duration-300",
+                "w-1.5 h-1.5 rounded-full transition-all duration-300",
                 index === currentIndex
-                  ? "bg-primary"
+                  ? "bg-primary w-3"
                   : "bg-primary/20"
               )}
             />

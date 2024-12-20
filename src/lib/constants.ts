@@ -15,43 +15,43 @@ export const AMBIENT_SOUNDS: Sound[] = [
   {
     id: 'rain',
     name: 'Rain',
-    url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_c8b8530038.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/2515/2515-preview.mp3',
     icon: 'CloudRain'
   },
   {
     id: 'forest',
     name: 'Forest',
-    url: 'https://cdn.pixabay.com/audio/2022/01/18/audio_d0a13f69d2.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/2526/2526-preview.mp3',
     icon: 'TreePine'
   },
   {
     id: 'waves',
     name: 'Ocean',
-    url: 'https://cdn.pixabay.com/audio/2022/05/16/audio_db6c7ac069.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/135/135-preview.mp3',
     icon: 'Waves'
   },
   {
     id: 'birds',
     name: 'Birds',
-    url: 'https://cdn.pixabay.com/audio/2022/04/07/audio_942b0d9875.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/2516/2516-preview.mp3',
     icon: 'Bird'
   },
   {
     id: 'fire',
     name: 'Fireplace',
-    url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_270c3c5dcf.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/2544/2544-preview.mp3',
     icon: 'Flame'
   },
   {
     id: 'wind',
     name: 'Wind',
-    url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_c8b8530038.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/2517/2517-preview.mp3',
     icon: 'Wind'
   },
   {
     id: 'white-noise',
     name: 'White Noise',
-    url: 'https://cdn.pixabay.com/audio/2022/03/15/audio_c8b8530038.mp3',
+    url: 'https://assets.mixkit.co/active_storage/sfx/2523/2523-preview.mp3',
     icon: 'Music'
   }
 ];
