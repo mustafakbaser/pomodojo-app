@@ -4,6 +4,7 @@ import { Sound } from '@/lib/types';
 export function useAudio(sounds: Sound[]) {
   const [activeSound, setActiveSound] = useState<string | null>(null);
   const [volume, setVolume] = useState(0.5);
+  const [isPlaying, setIsPlaying] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
   const isLoadingRef = useRef(false);
 
@@ -17,31 +18,33 @@ export function useAudio(sounds: Sound[]) {
 
         const audio = new Audio();
         
-        // Add error handling before setting the source
         audio.onerror = (e) => {
           console.error('Audio loading error:', e);
           isLoadingRef.current = false;
           setActiveSound(null);
+          setIsPlaying(false);
         };
 
-        // Set audio properties
         audio.src = sound.url;
         audio.loop = true;
         audio.volume = volume;
         audioRef.current = audio;
 
-        // Play audio if this is the active sound
         if (activeSound === sound.id) {
           try {
-            await audio.play();
+            if (isPlaying) {
+              await audio.play();
+            }
           } catch (error) {
             console.error('Audio play error:', error);
             setActiveSound(null);
+            setIsPlaying(false);
           }
         }
       } catch (error) {
         console.error('Audio setup error:', error);
         setActiveSound(null);
+        setIsPlaying(false);
       } finally {
         isLoadingRef.current = false;
       }
@@ -61,24 +64,47 @@ export function useAudio(sounds: Sound[]) {
         audioRef.current = null;
       }
     };
-  }, [activeSound, sounds, volume]);
+  }, [activeSound, sounds, isPlaying]);
+
+  useEffect(() => {
+    if (audioRef.current) {
+      audioRef.current.volume = volume;
+    }
+  }, [volume]);
 
   const toggleSound = (soundId: string) => {
     if (isLoadingRef.current) return;
-    setActiveSound(current => current === soundId ? null : soundId);
+    
+    if (activeSound === soundId) {
+      setIsPlaying(false);
+      setActiveSound(null);
+    } else {
+      setActiveSound(soundId);
+      setIsPlaying(true);
+    }
+  };
+
+  const togglePlayPause = () => {
+    if (!audioRef.current || !activeSound) return;
+
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play().catch(console.error);
+    }
+    setIsPlaying(!isPlaying);
   };
 
   const adjustVolume = (newVolume: number) => {
     setVolume(newVolume);
-    if (audioRef.current) {
-      audioRef.current.volume = newVolume;
-    }
   };
 
   return {
     activeSound,
     volume,
+    isPlaying,
     toggleSound,
+    togglePlayPause,
     adjustVolume
   };
 }

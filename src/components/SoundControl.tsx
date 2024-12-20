@@ -12,7 +12,9 @@ import {
   Wind, 
   Music,
   Volume2,
-  Headphones
+  Headphones,
+  Play,
+  Pause
 } from 'lucide-react';
 
 const iconMap = {
@@ -26,13 +28,29 @@ const iconMap = {
 };
 
 export function SoundControl() {
-  const { activeSound, volume, toggleSound, adjustVolume } = useAudio(AMBIENT_SOUNDS);
+  const { activeSound, volume, isPlaying, toggleSound, togglePlayPause, adjustVolume } = useAudio(AMBIENT_SOUNDS);
 
   return (
     <div className="space-y-4">
-      <div className="flex items-center space-x-2 mb-4">
-        <Headphones className="h-5 w-5" />
-        <h2 className="text-xl font-semibold">Ambient Sounds</h2>
+      <div className="flex items-center justify-between mb-4">
+        <div className="flex items-center space-x-2">
+          <Headphones className="h-5 w-5" />
+          <h2 className="text-xl font-semibold">Ambient Sounds</h2>
+        </div>
+        {activeSound && (
+          <Button
+            variant="outline"
+            size="icon"
+            onClick={togglePlayPause}
+            className="rounded-full"
+          >
+            {isPlaying ? (
+              <Pause className="h-4 w-4" />
+            ) : (
+              <Play className="h-4 w-4" />
+            )}
+          </Button>
+        )}
       </div>
 
       <div className="flex flex-wrap gap-2">
