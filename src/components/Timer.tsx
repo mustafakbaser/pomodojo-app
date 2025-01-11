@@ -4,7 +4,6 @@ import { Progress } from '@/components/ui/progress';
 import { Play, Pause, SkipForward, RotateCcw } from 'lucide-react';
 import { useTimer } from '@/hooks/useTimer';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
-import { useNotification } from '@/hooks/useNotification';
 import { PHASE_LABELS } from '@/lib/constants';
 import { PomodoroPhase } from '@/lib/types';
 import { cn } from '@/lib/utils';
@@ -15,9 +14,9 @@ interface TimerProps {
   onSkip: () => void;
   type: PomodoroPhase;
   session: { current: number; total: number };
+  // Called from the user's start gesture (click or Space).
+  onStart?: () => void;
   autoStart?: boolean;
-  notificationEnabled?: boolean;
-  notificationVolume?: number;
 }
 
 export function Timer({
@@ -26,9 +25,8 @@ export function Timer({
   onSkip,
   type,
   session,
-  autoStart = false,
-  notificationEnabled = true,
-  notificationVolume = 0.5
+  onStart,
+  autoStart = false
 }: TimerProps) {
   const { timeLeft, isRunning, progress, start, pause, reset } = useTimer(
     duration,
@@ -36,15 +34,13 @@ export function Timer({
     autoStart
   );
 
-  const notification = useNotification(notificationEnabled, notificationVolume);
-
-  const handleComplete = () => {
-    notification.play();
-    onComplete();
+  const handleStart = () => {
+    onStart?.();
+    start();
   };
 
   useKeyboardShortcuts({
-    onSpace: () => (isRunning ? pause() : start()),
+    onSpace: () => (isRunning ? pause() : handleStart()),
     onR: reset,
     onS: onSkip,
   });
@@ -164,7 +160,7 @@ export function Timer({
         <Button
           variant="default"
           size="icon"
-          onClick={isRunning ? pause : start}
+          onClick={isRunning ? pause : handleStart}
           className={cn(
             "rounded-full w-16 h-16 transition-all duration-300",
             isRunning ? "bg-primary/90 hover:bg-primary/100" : "bg-primary hover:bg-primary/90",

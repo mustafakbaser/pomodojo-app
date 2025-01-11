@@ -1,4 +1,5 @@
 import { PomodoroSettings, PomodoroPhase, Sound, Quote } from './types';
+import completeSound from '@/assets/sounds/complete.wav';
 
 export const DEFAULT_SETTINGS: PomodoroSettings = {
   workDuration: 25,
@@ -63,7 +64,7 @@ export const PHASE_LABELS: Record<PomodoroPhase, string> = {
 };
 
 export const NOTIFICATION_SOUNDS = {
-  COMPLETE: 'https://cdn.pixabay.com/audio/2022/03/15/audio_c8b8530038.mp3',
+  COMPLETE: completeSound,
 };
 
 export const KEYBOARD_SHORTCUTS = [

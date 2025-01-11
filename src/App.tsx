@@ -6,6 +6,7 @@ import { ThemeToggle } from '@/components/ThemeToggle';
 import { SessionHistory } from '@/components/SessionHistory';
 import { BreakSuggestion } from '@/components/BreakSuggestion';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
+import { useNotification } from '@/hooks/useNotification';
 import { PomodoroSettings, PomodoroSession, ThemeColor } from '@/lib/types';
 import { DEFAULT_SETTINGS, MOTIVATIONAL_QUOTES } from '@/lib/constants';
 import {
@@ -31,6 +32,7 @@ function App() {
   const [cycle, setCycle] = React.useState<PomodoroCycle>(INITIAL_CYCLE);
   // The first phase waits for the user; later phases follow the auto-start settings.
   const [autoStartPhase, setAutoStartPhase] = React.useState(false);
+  const notification = useNotification(settings.notificationSound, settings.notificationVolume);
 
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
@@ -43,6 +45,7 @@ function App() {
   };
 
   const handleComplete = () => {
+    notification.play();
     if (cycle.phase === 'work') {
       const newSession: PomodoroSession = {
         id: Date.now().toString(),
@@ -88,6 +91,7 @@ function App() {
               duration={getPhaseDuration(cycle.phase, settings)}
               onComplete={handleComplete}
               onSkip={advanceCycle}
+              onStart={notification.unlock}
               type={cycle.phase}
               session={getSessionProgress(cycle, settings.sessionsBeforeLongBreak)}
               autoStart={autoStartPhase}
