@@ -11,11 +11,13 @@ export interface PomodoroSettings {
   notificationVolume: number;
 }
 
+export type PomodoroPhase = 'work' | 'break' | 'longBreak';
+
 export interface PomodoroSession {
   id: string;
   startTime: string;
   duration: number;
-  type: 'work' | 'break' | 'longBreak';
+  type: PomodoroPhase;
   completed: boolean;
 }
 

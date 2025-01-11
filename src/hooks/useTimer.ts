@@ -7,7 +7,6 @@ interface TimerHook {
   start: () => void;
   pause: () => void;
   reset: () => void;
-  skip: () => void;
 }
 
 export function useTimer(
@@ -52,14 +51,6 @@ export function useTimer(
     setIsRunning(false);
   };
 
-  const skip = () => {
-    endTimeRef.current = null;
-    remainingMsRef.current = 0;
-    setTimeLeft(0);
-    setIsRunning(false);
-    onCompleteRef.current?.();
-  };
-
   useEffect(() => {
     if (!isRunning) return;
 
@@ -96,7 +87,12 @@ export function useTimer(
     };
   }, [isRunning]);
 
+  // Only reset when the duration actually changes, so a timer mounted with
+  // autoStart keeps running.
+  const durationRef = useRef(duration);
   useEffect(() => {
+    if (durationRef.current === duration) return;
+    durationRef.current = duration;
     reset();
   }, [duration, reset]);
 
@@ -109,6 +105,5 @@ export function useTimer(
     start,
     pause,
     reset,
-    skip,
   };
 }

@@ -8,6 +8,14 @@ import { BreakSuggestion } from '@/components/BreakSuggestion';
 import { useLocalStorage } from '@/hooks/useLocalStorage';
 import { PomodoroSettings, PomodoroSession, ThemeColor } from '@/lib/types';
 import { DEFAULT_SETTINGS, MOTIVATIONAL_QUOTES } from '@/lib/constants';
+import {
+  INITIAL_CYCLE,
+  PomodoroCycle,
+  getAutoStart,
+  getNextCycle,
+  getPhaseDuration,
+  getSessionProgress,
+} from '@/lib/pomodoro';
 import { Card, CardContent } from '@/components/ui/card';
 import { Separator } from '@/components/ui/separator';
 
@@ -20,20 +28,32 @@ function App() {
     const randomIndex = Math.floor(Math.random() * MOTIVATIONAL_QUOTES.length);
     return MOTIVATIONAL_QUOTES[randomIndex];
   });
+  const [cycle, setCycle] = React.useState<PomodoroCycle>(INITIAL_CYCLE);
+  // The first phase waits for the user; later phases follow the auto-start settings.
+  const [autoStartPhase, setAutoStartPhase] = React.useState(false);
 
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', theme === 'dark');
   }, [theme]);
 
+  const advanceCycle = () => {
+    const next = getNextCycle(cycle, settings.sessionsBeforeLongBreak);
+    setCycle(next);
+    setAutoStartPhase(getAutoStart(next.phase, settings));
+  };
+
   const handleComplete = () => {
-    const newSession: PomodoroSession = {
-      id: Date.now().toString(),
-      startTime: new Date().toISOString(),
-      duration: settings.workDuration,
-      type: 'work',
-      completed: true
-    };
-    setSessions([newSession, ...sessions].slice(0, 100));
+    if (cycle.phase === 'work') {
+      const newSession: PomodoroSession = {
+        id: Date.now().toString(),
+        startTime: new Date().toISOString(),
+        duration: settings.workDuration,
+        type: 'work',
+        completed: true
+      };
+      setSessions([newSession, ...sessions].slice(0, 100));
+    }
+    advanceCycle();
   };
 
   const handleClearHistory = () => {
@@ -62,11 +82,15 @@ function App() {
         {/* Timer Card */}
         <Card className="border-2 shadow-lg hover:shadow-xl transition-shadow duration-300">
           <CardContent className="p-8">
+            {/* Keyed per phase so each phase starts with a fresh timer */}
             <Timer
-              duration={settings.workDuration}
+              key={`${cycle.phase}-${cycle.completedWorkSessions}`}
+              duration={getPhaseDuration(cycle.phase, settings)}
               onComplete={handleComplete}
-              type="work"
-              autoStart={settings.autoStartPomodoros}
+              onSkip={advanceCycle}
+              type={cycle.phase}
+              session={getSessionProgress(cycle, settings.sessionsBeforeLongBreak)}
+              autoStart={autoStartPhase}
             />
           </CardContent>
         </Card>

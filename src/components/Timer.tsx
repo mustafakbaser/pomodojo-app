@@ -5,12 +5,16 @@ import { Play, Pause, SkipForward, RotateCcw } from 'lucide-react';
 import { useTimer } from '@/hooks/useTimer';
 import { useKeyboardShortcuts } from '@/hooks/useKeyboardShortcuts';
 import { useNotification } from '@/hooks/useNotification';
+import { PHASE_LABELS } from '@/lib/constants';
+import { PomodoroPhase } from '@/lib/types';
 import { cn } from '@/lib/utils';
 
 interface TimerProps {
   duration: number;
   onComplete: () => void;
-  type: 'work' | 'break' | 'longBreak';
+  onSkip: () => void;
+  type: PomodoroPhase;
+  session: { current: number; total: number };
   autoStart?: boolean;
   notificationEnabled?: boolean;
   notificationVolume?: number;
@@ -19,12 +23,14 @@ interface TimerProps {
 export function Timer({
   duration,
   onComplete,
+  onSkip,
   type,
+  session,
   autoStart = false,
   notificationEnabled = true,
   notificationVolume = 0.5
 }: TimerProps) {
-  const { timeLeft, isRunning, progress, start, pause, reset, skip } = useTimer(
+  const { timeLeft, isRunning, progress, start, pause, reset } = useTimer(
     duration,
     onComplete,
     autoStart
@@ -40,7 +46,7 @@ export function Timer({
   useKeyboardShortcuts({
     onSpace: () => (isRunning ? pause() : start()),
     onR: reset,
-    onS: skip,
+    onS: onSkip,
   });
 
   const minutes = Math.floor(timeLeft / 60);
@@ -60,11 +66,11 @@ export function Timer({
   };
 
   React.useEffect(() => {
-    document.title = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} - Pomodoro`;
+    document.title = `${String(minutes).padStart(2, '0')}:${String(seconds).padStart(2, '0')} - ${PHASE_LABELS[type]}`;
     return () => {
       document.title = 'Pomodoro Timer';
     };
-  }, [minutes, seconds]);
+  }, [minutes, seconds, type]);
 
   return (
     <div className="flex flex-col items-center space-y-8">
@@ -85,8 +91,11 @@ export function Timer({
           )}>
             {String(minutes).padStart(2, '0')}:{String(seconds).padStart(2, '0')}
           </div>
-          <div className="text-sm text-muted-foreground mt-2 capitalize">
-            {type} Session
+          <div className="text-sm text-muted-foreground mt-2">
+            {PHASE_LABELS[type]}
+          </div>
+          <div className="text-xs text-muted-foreground">
+            Session {session.current} of {session.total}
           </div>
         </div>
 
@@ -173,7 +182,7 @@ export function Timer({
         <Button
           variant="outline"
           size="icon"
-          onClick={skip}
+          onClick={onSkip}
           className="rounded-full w-12 h-12 transition-transform hover:scale-105"
           title="Skip (S)"
         >

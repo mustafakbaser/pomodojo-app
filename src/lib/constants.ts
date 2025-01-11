@@ -1,4 +1,4 @@
-import { PomodoroSettings, Sound, Quote } from './types';
+import { PomodoroSettings, PomodoroPhase, Sound, Quote } from './types';
 
 export const DEFAULT_SETTINGS: PomodoroSettings = {
   workDuration: 25,
@@ -55,6 +55,12 @@ export const AMBIENT_SOUNDS: Sound[] = [
     icon: 'Music'
   }
 ];
+
+export const PHASE_LABELS: Record<PomodoroPhase, string> = {
+  work: 'Work Session',
+  break: 'Short Break',
+  longBreak: 'Long Break',
+};
 
 export const NOTIFICATION_SOUNDS = {
   COMPLETE: 'https://cdn.pixabay.com/audio/2022/03/15/audio_c8b8530038.mp3',
